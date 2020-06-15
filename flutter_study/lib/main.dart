@@ -9,7 +9,7 @@ class MyApp extends StatelessWidget {
     return new MaterialApp(
       title: 'Welcome to Flutter1',
       theme: new ThemeData(
-        primaryColor: Colors.blue[200],
+        primaryColor: Colors.blue[300],
       ),
       home: RandomWords(),
     );
@@ -41,7 +41,7 @@ class RandomWordsState extends State<RandomWords> {
           _suggestions.addAll(generateWordPairs().take(10));
         }
         return _buildRow(_suggestions[index]);
-      },
+      }
     );
   }
 
@@ -70,11 +70,33 @@ class RandomWordsState extends State<RandomWords> {
     );
   }
 
+  void _pushSaved () {
+    Navigator.of(context).push(
+      new MaterialPageRoute(
+        builder: (context) {
+          final tiles = _saved.map((pair) => new ListTile(
+              title: new Text(
+                pair.asPascalCase,
+                style: _biggerFont,
+              ),
+            )
+          );
+          final divided = ListTile.divideTiles(context: context, tiles: tiles).toList();
+
+          return Scaffold(appBar: AppBar(title: Text('Saved Suggestions')), body: ListView(children: divided));
+        },
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Startup Name Generator'),
+        actions: <Widget>[
+          IconButton(icon: Icon(Icons.list), onPressed: _pushSaved)
+        ],
       ),
       body: _buildSuggestions(),
     );
